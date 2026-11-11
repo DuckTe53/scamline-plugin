@@ -1,0 +1,29 @@
+# Format: dünya,x,y,z,yaw  (8 oda, her biri gri beton 5x4x5 odanın merkezi)
+rooms:
+  - "world,100,64,100,0"
+  - "world,110,64,100,0"
+  - "world,120,64,100,0"
+  - "world,130,64,100,0"
+  - "world,100,64,110,0"
+  - "world,110,64,110,0"
+  - "world,120,64,110,0"
+  - "world,130,64,110,0"
+
+# Ortak ofis koridoru (oy etapları ve ok ruleti)
+corridor: "world,200,64,200,0"
+
+# Oda merkezine göre çerçeve konumları (x,y,z)
+frames:
+  share-offset: "-2,1,0"
+  steal-offset: "2,1,0"
+
+skins:
+  default: ItzSilentEchoz
+  clown: im_a_lauver0
+  frog: MaoZedong67
+
+# SkinsRestorer komutu. {skin} ve {player} otomatik doldurulur.
+skin-command: "skin set {skin} {player}"
+
+share-reshuffle-minutes: 3
+scoreboard-rotate-seconds: 25
