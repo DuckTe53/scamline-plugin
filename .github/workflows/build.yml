@@ -1,0 +1,31 @@
+name: Build ScamLine
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Java 21 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Maven ile derle
+        run: mvn -B package --file pom.xml
+
+      - name: Jar dosyasını artifact olarak yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ScamLine
+          path: target/ScamLine.jar
