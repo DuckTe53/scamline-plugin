@@ -1,0 +1,15 @@
+name: ScamLine
+version: 1.0.0
+main: com.scamline.ScamLinePlugin
+api-version: '1.21'
+description: Sosyal aldatmaca mini oyunu
+softdepend: [SkinsRestorer]
+commands:
+  scamline:
+    description: Scam Line oyununu yönetir
+    usage: /scamline <baslat|etapbitir|yenietap|durdur|palyacotahmin|sayitahmin|renktahmin>
+    permission: scamline.use
+permissions:
+  scamline.use:
+    description: Scam Line komutlarını kullanma
+    default: op
