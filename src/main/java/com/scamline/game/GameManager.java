@@ -12,6 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,6 +36,7 @@ public final class GameManager {
     private final ScoreManager scores;
     private final SkinManager skins;
 
+    private final RoomBuilder builder;
     private final Set<UUID> participants = new LinkedHashSet<>();
     private final List<Stage> pool = new ArrayList<>();
     private final Deque<Stage> queue = new ArrayDeque<>();
@@ -48,6 +50,7 @@ public final class GameManager {
         this.rooms = rooms;
         this.scores = scores;
         this.skins = skins;
+        this.builder = new RoomBuilder(plugin);
 
         pool.add(new ShareStealStage(this));
         pool.add(new CostumeStage(this));
@@ -92,12 +95,22 @@ public final class GameManager {
             return;
         }
         List<Player> online = new ArrayList<>(Bukkit.getOnlinePlayers());
-        if (online.size() < 2 || online.size() > 8) {
-            sender.sendMessage(Component.text("Oyun 2-8 oyuncu ile başlar.", NamedTextColor.RED));
+        int minPlayers = plugin.getConfig().getInt("min-players", 1);
+        if (online.size() < minPlayers || online.size() > 8) {
+            sender.sendMessage(Component.text(
+                    "Oyun " + minPlayers + "-8 oyuncu ile başlar.", NamedTextColor.RED));
             return;
         }
-        if (rooms.roomCount() < online.size()) {
-            sender.sendMessage(Component.text("Yeterli oda tanımlı değil, config.yml dosyasını kontrol et.", NamedTextColor.RED));
+        // Odaları her başlatmada, komutu veren oyuncunun olduğu yerde kur
+        Location base = sender instanceof Player p
+                ? p.getLocation()
+                : Bukkit.getWorlds().get(0).getSpawnLocation();
+        sender.sendMessage(Component.text("Odalar kuruluyor, lütfen bekle...", NamedTextColor.GRAY));
+        builder.build(base);
+        rooms.reload();
+
+        if (!rooms.isReady(online.size())) {
+            sender.sendMessage(Component.text("Odalar kurulamadı, config.yml ve sunucu konsolunu kontrol et.", NamedTextColor.RED));
             return;
         }
 
@@ -145,6 +158,11 @@ public final class GameManager {
                 Title.Times.times(Duration.ofMillis(300), Duration.ofSeconds(3), Duration.ofMillis(500)));
         for (Player p : activePlayers()) p.showTitle(title);
 
+        // Oda etapları için oyuncular önce odalarına döner (koridor etapları kendi ışınlanır)
+        if (!(next instanceof VoteStage) && !(next instanceof ArrowRouletteStage)) {
+            for (Player p : activePlayers()) rooms.sendToRoom(p);
+        }
+
         next.start();
         renderBoard();
     }
@@ -157,6 +175,10 @@ public final class GameManager {
         Stage ended = current;
         ended.end();
         current = null;
+
+        // Her etap bitince herkes koridora gider
+        Location corridor = rooms.corridor();
+        for (Player p : activePlayers()) p.teleport(corridor);
 
         List<UUID> winners = scores.settle(participants);
         announce(Component.text("Etap bitti: " + ended.name(), NamedTextColor.GOLD));
@@ -172,6 +194,18 @@ public final class GameManager {
         } else {
             announce(Component.text("Sıradaki etap için /scamline yenietap", NamedTextColor.GRAY));
         }
+    }
+
+    /** /scamline kurulum: oyuncunun olduğu yerden odaları ve koridoru kurar. */
+    public void buildRooms(Player player) {
+        if (running) {
+            player.sendMessage(Component.text("Oyun çalışırken kurulum yapılamaz.", NamedTextColor.RED));
+            return;
+        }
+        player.sendMessage(Component.text("Odalar kuruluyor, biraz sürebilir...", NamedTextColor.GRAY));
+        builder.build(player.getLocation());
+        rooms.reload();
+        player.sendMessage(Component.text("Kurulum tamam: 8 oda ve koridor 250 blok arayla kuruldu.", NamedTextColor.GREEN));
     }
 
     public void stop() {

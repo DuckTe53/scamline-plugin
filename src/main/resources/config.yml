@@ -1,21 +1,15 @@
-# Format: dünya,x,y,z,yaw  (8 oda, her biri gri beton 5x4x5 odanın merkezi)
-rooms:
-  - "world,100,64,100,0"
-  - "world,110,64,100,0"
-  - "world,120,64,100,0"
-  - "world,130,64,100,0"
-  - "world,100,64,110,0"
-  - "world,110,64,110,0"
-  - "world,120,64,110,0"
-  - "world,130,64,110,0"
+# Başlamak için gereken en az oyuncu. Test için 1, gerçek oyun için 2 yap.
+min-players: 1
 
-# Ortak ofis koridoru (oy etapları ve ok ruleti)
-corridor: "world,200,64,200,0"
+# Odalar ve koridor "/scamline kurulum" komutuyla otomatik oluşturulur ve bu alanlar dolar.
+rooms: []
 
-# Oda merkezine göre çerçeve konumları (x,y,z)
+corridor: ""
+
+# Oda merkezine göre çerçeve konumları (x,y,z). Kuzey duvarına (oda içine bakan) yerleşir.
 frames:
-  share-offset: "-2,1,0"
-  steal-offset: "2,1,0"
+  share-offset: "-1,1.5,-2"
+  steal-offset: "1,1.5,-2"
 
 skins:
   default: ItzSilentEchoz

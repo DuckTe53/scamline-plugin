@@ -14,15 +14,15 @@ mvn package
 Çıkan `target/ScamLine.jar` dosyasını sunucunun `plugins/` klasörüne koy.
 
 ## Kurulum
-1. `plugins/ScamLine/config.yml` içinde `rooms` listesini 8 oda için düzenle. Format: `dünya,x,y,z,yaw`
-2. `corridor` alanına ortak koridorun koordinatını yaz.
-3. `frames` ayarlarında yeşil/kırmızı çerçevelerin oda merkezine göre konumunu ayarla.
-4. Skin adlarını ve `skin-command` şablonunu kendi SkinsRestorer sürümüne göre kontrol et.
+1. Odalar artık `/scamline baslat` ile otomatik kurulur. Oyunu başlatmadan önce odaların başlamasını istediğin yerde dur. Ayrıca odaları ayrıca kurmak istersen `/scamline kurulum` da kullanabilirsin. Plugin 8 oda ve koridoru 250 blok arayla kurar ve koordinatları `config.yml` dosyasına yazar. Bu komut kurulum alanındaki bloklarını temizler, o yüzden boş bir alanda çalıştır.
+2. `frames` ayarlarını gerekirse düzenle. Yeşil/kırmızı çerçeveler oda içindeki kuzey duvarına yerleşir.
+3. Skin adlarını ve `skin-command` şablonunu kendi SkinsRestorer sürümüne göre kontrol et.
 
 ## Komutlar
 | Komut | Açıklama |
 |---|---|
-| `/scamline baslat` | Oyunu başlatır, oyuncuları odalara gönderir |
+| `/scamline kurulum` | Odaları ve koridoru kurar |
+| `/scamline baslat` | Odaları komutu yazdığın yerde kurar, oyuncuları odalara gönderir |
 | `/scamline etapbitir` | Aktif etabı bitirir, puanları dağıtır |
 | `/scamline yenietap` | Sıradaki etabı başlatır |
 | `/scamline durdur` | Oyunu zorla durdurur |

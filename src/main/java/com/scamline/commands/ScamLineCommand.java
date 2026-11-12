@@ -23,7 +23,7 @@ public final class ScamLineCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            send(sender, "Kullanım: /scamline <baslat|etapbitir|yenietap|durdur|palyacotahmin|sayitahmin|renktahmin>");
+            send(sender, "Kullanım: /scamline <kurulum|baslat|etapbitir|yenietap|durdur|palyacotahmin|sayitahmin|renktahmin>");
             return true;
         }
 
@@ -34,6 +34,10 @@ public final class ScamLineCommand implements CommandExecutor {
             case "etapbitir" -> game.endStage();
             case "yenietap" -> game.nextStage();
             case "durdur" -> game.stop();
+            case "kurulum" -> {
+                if (player == null) send(sender, "Bu komutu oyuncu olarak çalıştır.");
+                else game.buildRooms(player);
+            }
 
             case "palyacotahmin" -> {
                 if (player == null || args.length < 2) {

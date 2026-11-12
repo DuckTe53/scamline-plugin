@@ -60,6 +60,25 @@ public final class RoomManager {
         }
     }
 
+    /** Gerekli odalar ve koridor için zemin var mı kontrol eder. */
+    public boolean isReady(int playerCount) {
+        if (corridor == null || rooms.size() < playerCount) return false;
+        for (int i = 0; i < playerCount; i++) {
+            if (!hasFloor(rooms.get(i))) return false;
+        }
+        return hasFloor(corridor);
+    }
+
+    private static boolean hasFloor(Location loc) {
+        return loc.clone().add(0, -1, 0).getBlock().getType().isSolid();
+    }
+
+    /** Oyuncuyu kendi odasına geri gönderir. */
+    public void sendToRoom(Player player) {
+        Location room = roomOf.get(player.getUniqueId());
+        if (room != null) player.teleport(room);
+    }
+
     public void forget() {
         roomOf.clear();
     }
